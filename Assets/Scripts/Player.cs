@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
     // reference
     private CharacterController _characterController;
     private Animator _anim;
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,7 +27,12 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(_characterController.isGrounded == true)
+        Movement();
+    }
+
+    private void Movement()
+    {
+        if (_characterController.isGrounded == true)
         {
             float forward = Input.GetAxisRaw("Horizontal");
             _direction = new Vector3(0, 0, forward) * _speed;
@@ -61,5 +66,12 @@ public class Player : MonoBehaviour
         // adjust jump height
 
         _characterController.Move(_direction * Time.deltaTime);
+    }
+
+    public void GrabLedge(Vector3 handPos) 
+    {
+        _characterController.enabled = false;
+        _anim.SetBool("GrabLedge", true);
+        transform.position = handPos;
     }
 }

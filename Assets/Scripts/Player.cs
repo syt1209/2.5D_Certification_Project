@@ -12,10 +12,13 @@ public class Player : MonoBehaviour
 
     // state parameter
     private bool _jumping = false;
+    private Vector3 _feetPos = new Vector3(-1.36f, 74.52f, 124.41f);
 
     // reference
     private CharacterController _characterController;
     private Animator _anim;
+    private Ledge_Check _activeLedge;
+
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +31,10 @@ public class Player : MonoBehaviour
     void Update()
     {
         Movement();
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            ClimbUp();
+        }
     }
 
     private void Movement()
@@ -68,10 +75,25 @@ public class Player : MonoBehaviour
         _characterController.Move(_direction * Time.deltaTime);
     }
 
-    public void GrabLedge(Vector3 handPos) 
+    public void GrabLedge(Vector3 handPos, Ledge_Check currentLedge) 
     {
         _characterController.enabled = false;
         _anim.SetBool("GrabLedge", true);
+        _anim.SetBool("Jump", false);
+        _anim.SetFloat("Speed", 0f);
         transform.position = handPos;
+        _activeLedge = currentLedge;
+    }
+
+    private void ClimbUp()
+    {
+        _anim.SetTrigger("ClimbUp");
+    }
+
+    public void StandUp()
+    {
+        transform.position = _activeLedge.GetStandPos();
+        _anim.SetBool("GrabLedge", false);
+        _characterController.enabled = true;
     }
 }
